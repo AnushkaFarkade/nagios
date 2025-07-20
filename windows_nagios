@@ -100,3 +100,16 @@ templates.cfg me jake hostgroups ko comment karo
 
 - `sudo systemctl restart nagios`
 
+
+
+
+
+LINUX
+
+sudo apt update
+sudo apt install ca-certificates
+sudo update-ca-certificates
+
+ wget https://assets.nagios.com/downloads/ncpa3/ncpa-latest-1.amd64.deb
+
+
