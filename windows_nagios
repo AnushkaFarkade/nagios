@@ -1,0 +1,102 @@
+//Monitoring a Remote windows Hosts
+
+must have a windows 10, 8 gb memory is good
+
+nagios machine should ping with windows machine
+
+in windows machine install the plugin ncpa setup
+
+token : admin123(just a random password i gave) , and then next next next! finish!
+
+now check if plugin is working or not for that
+go to browser windows ka https:\ip:5693, if not working turn off the firewall.
+
+
+go to services and check ncpa is running or not , if not , r click run it.
+
+now it should work properly, it will ask for password, add your token password into it .
+
+cpu/memory me jage to ek chart dhikega, usme kuchna kuch to aana he chaiye, if not coming then
+smth went wrong in installation .
+
+
+//debian machine( where nagios is installed)
+
+cd /usr/local/nagios/libexec/
+
+
+sudo wget https://github.com/NagiosEnterprises/ncpa/raw/master/client/check_ncpa.py -O check_ncpa.py
+
+
+//sudo tar zxf check_ncpa.tar.gz
+
+ls -l check_ncpa.py              //check if execute permession is there.
+
+sudo nano check_ncpa.py          //env k aage python3 likho
+
+sudo ./check_ncpa.py -V         //iff script is working fine it will show version
+
+sudo ./check_ncpa.py -t Password1234 -H 192.168.80.132 -M memory/virtual
+
+//Password1234 is windows machine ncpa wala token, ip bhi windows wali dalo jispme ncpa he
+
+cd ..
+
+ls -l
+
+cd etc/objects/
+
+sudo nano commands.cfg
+
+//go to end of the file u will see
+
+defined command {
+ bla bla bla
+} #below that u write
+
+define command {
+    command_name    check_ncpa
+    command_line    $USER1$/check_ncpa.py -H $HOSTADDRESS$ -t $ARG1$ -P 5693 -M $ARG2$ $ARG3$ $ARG4$
+}
+
+sudo nano nagios.cfg
+
+#cfg_file=/usr/local/nagios/etc/objects/windows.cfg       //uncomment this line 51
+
+nagios/etc$ sudo mkdir servers (if servers dir is already there then don't create this)
+
+cd servers
+
+sudo nano win10-1.cfg
+
+define host {
+    use                     windows-server
+    host_name               win10
+    alias                   Windows 10 Sys
+    address                 192.168.80.136
+    max_check_attempts      5
+    check_period            24x7
+    notification_interval   30
+    notification_period     24x7
+    contacts                nagiosadmin
+    register                1
+}
+
+define service {
+    use                             generic-service
+    host_name                       win10
+    service_description             NCPA Agent Version
+    check_command                   check_ncpa!admin!system/agent_version
+}
+
+define service {
+    use                             generic-service
+    host_name                       win10
+    service_description             CPU Average
+    check_command                   check_ncpa!admin!cpu/percent!-w 20!-c 40
+}
+
+templates.cfg me jake hostgroups ko comment karo
+
+- `sudo systemctl restart nagios`
+
