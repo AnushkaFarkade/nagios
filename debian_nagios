@@ -1,0 +1,95 @@
+sudo apt-get install apache2 apache2-utils autoconf gcc libc6 libgd-dev make php python3
+tree unzip wget libkrb5-dev openssl libssl-dev
+
+wget --no-check-certificate https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.5.0.tar.gz
+
+install unzip
+
+tar -zxf nagios-4.5.0.tar.gz 
+
+ls -l check nagios-4.5.0 is extracted or not(this is how i verified)
+
+ls -l /etc/apache2/sites-*
+
+cd nagios-4.5.0
+
+u will see configure file and check permission, and run that file
+
+sudo ./configure --with-httpd-conf=/etc/apache2/sites-enabled  
+
+all checks should be
+succesful, if it shows error then u defenitly have dependecy file installation problem go there and
+install those dependency again.
+
+sudo make all 
+
+this is the command to compile the code.
+
+create nagios user and group
+
+sudo make install-groups-users
+
+
+
+sudo passwd nagios              //give password "admin"
+
+
+sudo usermod -a -G nagios www-data                 //because www-data run the apache as a server.
+
+ls -l /usr/local/                                  //nagios folder is not there
+
+sudo make install
+
+sudo make install-daemoninit
+
+//install command mode
+
+sudo make install-commandmode
+
+ls -l /usr/local/nagios/
+
+                                                     //now run the command to copy the source file in
+sudo make install-config
+
+tree /etc/apache2/sites-*
+
+sudo make install-webconf
+
+//enable modules in apache2
+
+
+sudo a2enmod cgi
+
+sudo a2enmod rewrite
+
+sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+
+//nagios syntax to verify config file
+
+
+sudo /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+sudo systemctl restart nagios
+
+sudo systemctl restart apache2
+
+browser : 192.168.80.101/nagios/
+
+//Installation of plugins in nagios
+
+sudo apt-get install -y automake autotools-dev bc build-essential dc gawk gettext
+libmcrypt-dev libnet-snmp-perl libssl-dev snmp
+
+wget https://github.com/nagios-plugins/nagios-plugins/releases/download/release-2.4.0/nagios-plugins-2.4.0.tar.gz
+
+ls -l /usr/local/nagios/                      //here u see lib x where all the installation files are saved
+
+cd nagios plugins
+
+sudo ./configure
+
+sudo make
+
+sudo make install
+
+ls -l /usr/local/nagios/libexec/
